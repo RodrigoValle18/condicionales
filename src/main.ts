@@ -1,48 +1,85 @@
 document.addEventListener("DOMContentLoaded", () => {
-  let score = 0;
+    const botonPedirCarta = document.getElementById("draw-card-button");
+  
+    if (
+      botonPedirCarta !== null &&
+      botonPedirCarta !== undefined &&
+      botonPedirCarta instanceof HTMLButtonElement
+    ) {
+      botonPedirCarta.addEventListener("click", handleDrawCard);
+    } else {
+      throw Error("Error");
+    }
 
+    const botonPlantarse = document.getElementById("plantarse-button");
+  
+    if (
+      botonPlantarse !== null &&
+      botonPlantarse !== undefined &&
+      botonPlantarse instanceof HTMLButtonElement
+    ) {
+      botonPlantarse.addEventListener("click", handlePlantarse);
+    } else {
+      throw Error("Error");
+    }
+  
+    const botonNuevaPartida = document.getElementById("new-game-button");
+  
+    if (
+      botonNuevaPartida !== null &&
+      botonNuevaPartida !== undefined &&
+      botonNuevaPartida instanceof HTMLButtonElement
+    ) {
+      botonNuevaPartida.addEventListener("click", resetGameUI);
+    } else {
+      throw Error("Error");
+    }
+  });
+  
+  let score = 0;
+  
   const cartas = [1, 2, 3, 4, 5, 6, 7, 10, 11, 12];
   const imagenesCartas = [
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/1_as-copas.jpg",
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/2_dos-copas.jpg",
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/3_tres-copas.jpg",
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/4_cuatro-copas.jpg",
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/5_cinco-copas.jpg",
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/6_seis-copas.jpg",
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/7_siete-copas.jpg",
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/10_sota-copas.jpg",
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/11_caballo-copas.jpg",
-      "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/12_rey-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/1_as-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/2_dos-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/3_tres-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/4_cuatro-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/5_cinco-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/6_seis-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/7_siete-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/10_sota-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/11_caballo-copas.jpg",
+    "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/12_rey-copas.jpg",
   ];
-
-  const obtenerUrlCarta = (carta: number): string => imagenesCartas[carta - 1]; // Ajustar el índice
-
-  const dameNumeroAleatorio = (): number => Math.floor(Math.random() * cartas.length);
-
+  
+  const obtenerUrlCarta = (carta: number): string => imagenesCartas[carta - 1]; 
+  
+  const dameNumeroAleatorio = (): number =>
+    Math.floor(Math.random() * cartas.length);
+  
   const dameCarta = (): number => cartas[dameNumeroAleatorio()];
-
+  
   const valorCarta = (carta: number): number => (carta >= 10 ? 0.5 : carta);
-
+  
   const sumarPuntos = (puntos: number): number => score + puntos;
-
+  
   const actualizarScore = (puntosSumados: number): void => {
-      score = puntosSumados;
+    score = puntosSumados;
   };
-
+  
   const gestionarFinalPartida = (): string => {
-      if (score === 7.5) {
-          return "win";
-      }
-      if (score > 7.5) {
-          return "lose";
-      }
-      return "continue";
+    if (score === 7.5) {
+      return "win";
+    }
+    if (score > 7.5) {
+      return "lose";
+    }
+    return "continue";
   };
-
+  
   const resetGame = (): void => {
-      score = 0;
+    score = 0;
   };
-
   const getScore = (): number => score;
 
   const scoreDiv = getScoreDiv();
@@ -106,30 +143,61 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const muestraPuntuacion = (): void => {
-      scoreDiv.textContent = `Puntuación: ${getScore()}`;
+    scoreDiv.textContent = `Puntuación: ${getScore()}`;
   };
-
+  
   const mostrarCarta = (urlCarta: string): void => {
-      cardImage.src = urlCarta;
+    const element = document.getElementById("card-image");
+    if (
+      element !== null &&
+      element !== undefined &&
+      element instanceof HTMLImageElement
+    ) {
+      element.src = urlCarta;
+    } else {
+      throw new Error("Element with ID 'card-image' not found");
+    }
   };
-
+  
   const gameOver = (message: string): void => {
-      messageDiv.textContent = message;
-      drawCardButton.disabled = true;
-      plantarseButton.disabled = true;
-      newGameButton.style.display = "block";
+    messageDiv.textContent = message;
+    bloquearBotonPintarCarta();
+    plantarseButton.disabled = true;
+    newGameButton.style.display = "block";
   };
-
+  
+  const bloquearBotonPintarCarta = (): void => {
+    const botonPintarCarta = document.getElementById("draw-card-button");
+    if (
+      botonPintarCarta !== null &&
+      botonPintarCarta !== undefined &&
+      botonPintarCarta instanceof HTMLButtonElement
+    ) {
+      botonPintarCarta.disabled = true;
+    } else {
+      throw new Error("Element with ID 'draw-card-button' not found");
+    }
+  };
+  
   const resetGameUI = (): void => {
-      resetGame();
-      muestraPuntuacion();
-      cardImage.src = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg";
-      messageDiv.textContent = "";
-      drawCardButton.disabled = false;
-      plantarseButton.disabled = false;
-      newGameButton.style.display = "none";
+    resetGame();
+    muestraPuntuacion();
+    const element = document.getElementById("card-image");
+    if (
+      element !== null &&
+      element !== undefined &&
+      element instanceof HTMLImageElement
+    ) {
+      element.src = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg";
+    } else {
+      throw new Error("Element with ID 'card-image' not found");
+    }
+    messageDiv.textContent = "";
+    drawCardButton.disabled = false;
+    plantarseButton.disabled = false;
+    newGameButton.style.display = "none";
   };
-
+  
   drawCardButton.addEventListener("click", () => {
       handleDrawCard();
   });
